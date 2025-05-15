@@ -27,12 +27,13 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
-class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class PostUpdateView(UserPassesTestMixin, UpdateView):
     model = Post
-    template_name = 'blog/post_form.html'
+    template_name = 'blog/post_update.html'
     fields = ['title', 'content', 'categories']
     success_url = reverse_lazy('post_list')
 
     def test_func(self):
         post = self.get_object()
         return self.request.user == post.author
+
