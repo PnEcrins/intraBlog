@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <article>
+    <h1>{{ post.title }}</h1>
+    <p>
+      by {{ post.author.username }} |
+      published {{ post.created_at|date:"F j, Y" }}
+    </p>
+
+    <div>
+      {{ post.content|linebreaks }}
+    </div>
+
+    <p>
+      Categories:
+      {% for category in post.categories.all %}
+        <span>{{ category.name }}</span>{% if not forloop.last %}, {% endif %}
+      {% empty %}
+        <em>No categories</em>
+      {% endfor %}
+    </p>
+
+    <a href="{% url 'post_list' %}">&larr; Back to all posts</a>
+  </article>
+{% endblock %}
