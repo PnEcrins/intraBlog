@@ -22,7 +22,11 @@
     </p>
 
     {% if user == post.author %}
-      <a href="{% url 'post_update' post.pk %}">✏️ Edit Post</a>
+      <a href="{% url 'post_update' post.pk %}">Edit Post</a>
+    {% endif %}
+
+    {% if user == post.author %}
+      <a href="{% url 'post_delete' post.pk %}">Delete Post</a>
     {% endif %}
 
     <a href="{% url 'post_list' %}">&larr; Back to all posts</a>

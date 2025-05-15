@@ -5,6 +5,8 @@
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
+    <p>Hold down “Control”, or “Command” on a Mac, to select more than one.</p>
+
     <button type="submit">Save</button>
   </form>
   <a href="{% url 'post_list' %}">← Back to list</a>
