@@ -1,11 +1,10 @@
 {% extends "base.html" %} {% block content %}
 <h1>All Blog Posts</h1>
-<ul>
+
+<ul style="clear: both">
   {% for post in posts %}
   <li>
-    <h2>
-      <a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a>
-    </h2>
+    <h2><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h2>
     <p>by {{ post.author.username }} on {{ post.created_at|date:"F j, Y" }}</p>
     <div>{{ post.content|truncatewords:30 }}</div>
   </li>

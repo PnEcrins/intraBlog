@@ -7,9 +7,15 @@
   <body>
     <header>
       <h1><a href="{% url 'post_list' %}">IntraBlog</a></h1>
-      <hr />
+      <nav>
+        {% if user.is_authenticated %}
+        <span>Hi, {{ user.username }}!</span>
+        <a href="/admin/">Admin</a>
+        {% endif %}
+      </nav>
     </header>
 
     <main>{% block content %}{% endblock %}</main>
+    <hr>
   </body>
 </html>

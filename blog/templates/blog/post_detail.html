@@ -21,6 +21,10 @@
       {% endfor %}
     </p>
 
+    {% if user == post.author %}
+      <a href="{% url 'post_update' post.pk %}">✏️ Edit Post</a>
+    {% endif %}
+
     <a href="{% url 'post_list' %}">&larr; Back to all posts</a>
   </article>
 {% endblock %}

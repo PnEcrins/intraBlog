@@ -8,8 +8,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'created_at', 'updated_at')
+    list_display = ('title', 'author', 'created_at')
+    list_filter = ('author', 'categories', 'created_at')
     search_fields = ('title', 'content')
-    list_filter = ('categories', 'created_at', 'author')
-    date_hierarchy = 'created_at'
-    autocomplete_fields = ['author', 'categories']
+
