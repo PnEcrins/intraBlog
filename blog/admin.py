@@ -57,6 +57,9 @@ class PostAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
+    def get_categories(self, obj):
+        return ", ".join([c.name for c in obj.categories.all()])
+
     list_display = ('name',)
     search_fields = ('name',)
 

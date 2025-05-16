@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from tinymce import models as tiny_mce
+from django.utils.translation import gettext_lazy as _
 
 class PostQuerySet(models.QuerySet):
     def for_user(self, user):
@@ -16,7 +17,7 @@ class PostManager(models.Manager):
         return self.get_queryset().for_user(user)
 
 class Category(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(_('Category'), max_length=100, unique=True)
     
     class Meta:
         verbose_name_plural = "categories"
@@ -25,15 +26,15 @@ class Category(models.Model):
         return self.name
 
 class Post(models.Model):  
-    title = models.CharField(max_length=200)
+    title = models.CharField(_('Title'), max_length=200)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = tiny_mce.HTMLField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    content = tiny_mce.HTMLField(_('Content'), blank=True)
+    created_at = models.DateTimeField(_('created_at'), auto_now_add=True)
+    updated_at = models.DateTimeField(_('updated_at'), auto_now=True)
     categories = models.ManyToManyField(Category)
     posted = models.BooleanField(default=False)   
     image = models.ImageField(upload_to='post_images/', null=True, blank=True)
-
+    
     objects = PostManager()
 
     def __str__(self):
