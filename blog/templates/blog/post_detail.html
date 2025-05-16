@@ -21,6 +21,11 @@
       {% endfor %}
     </p>
 
+    {% if post.image %}
+      <img src="{{ post.image.url }}" alt="{{ post.title }}" style="max-width: 100%; height: auto;">
+    {% endif %}
+
+
     {% if user == post.author %}
       <a href="{% url 'post_update' post.pk %}">Edit Post</a>
     {% endif %}

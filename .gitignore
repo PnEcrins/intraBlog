@@ -175,3 +175,6 @@ cython_debug/
 
 # Script
 run.sh
+
+# media
+/media
