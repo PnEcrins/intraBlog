@@ -1,3 +1,12 @@
+[![License: GPL-3.0](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)
+[![Django](https://img.shields.io/badge/Django-5.2-success)](https://www.djangoproject.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)](https://www.postgresql.org/)
+[![Last Commit](https://img.shields.io/github/last-commit/PnEcrins/intrablog)](https://github.com/PnEcrins/intrablog/commits/main)
+[![Issues](https://img.shields.io/github/issues/PnEcrins/intrablog)](https://github.com/PnEcrins/intrablog/issues)
+
+<!-- [![Build Status](https://img.shields.io/github/actions/workflow/status/PnEcrins/intrablog/django.yml?branch=main)](https://github.com/PnEcrins/intrablog/actions) -->
+
 # 📝 IntraBlog – A Django Blog Project
 
 A blog platform built with Django and PostgreSQL.  
@@ -21,7 +30,7 @@ Includes users, authors, categories and post management.
 ### 1. Clone the project
 
 ```bash
-git clone https://github.com/yourusername/intrablog.git
+git clone https://github.com/PnEcrins/intrablog.git
 cd intrablog
 ```
 
@@ -45,6 +54,7 @@ pip install -r requirements.txt
 ### 4. Set up environment variables
 
 1. Copy the example file:
+
    ```bash
    cp .env-sample .env
    ```
