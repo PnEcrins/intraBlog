@@ -20,7 +20,7 @@ class Category(models.Model):
         return self.name
 
 class Post(models.Model):  
-    title = models.CharField(_('Title'), max_length=200)
+    title = models.CharField(verbose_name=_('Title'), max_length=200)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = tiny_mce.HTMLField(_('Content'), blank=True)
     created_at = models.DateTimeField(_('created_at'), auto_now_add=True)

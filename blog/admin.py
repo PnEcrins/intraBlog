@@ -53,20 +53,12 @@ class PostAdmin(admin.ModelAdmin):
             and obj.author == request.user
         )
 
-    # Allow add if user is superuser or belongs to "Publisher" group
-    def has_add_permission(self, request):
-        return request.user.is_superuser or self._is_publisher(request.user)
-
     # Automatically assign current user as author when saving
     def save_model(self, request, obj, form, change):
         if not change or not obj.author_id:
             obj.author = request.user
         super().save_model(request, obj, form, change)
-
-    # Check if user is in "Publisher" group
-    def _is_publisher(self, user):
-        return user.groups.filter(name=PUBLISHER_GROUP_NAME).exists()
-
+        
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -76,23 +68,3 @@ class CategoryAdmin(admin.ModelAdmin):
 
     list_display = ("name",)
     search_fields = ("name",)
-
-    # Only superusers can access categories module
-    def has_module_permission(self, request):
-        return request.user.is_superuser
-
-    # Only superusers can view categories
-    def has_view_permission(self, request, obj=None):
-        return request.user.is_superuser
-
-    # Only superusers can add categories
-    def has_add_permission(self, request):
-        return request.user.is_superuser
-
-    # Only superusers can edit categories
-    def has_change_permission(self, request, obj=None):
-        return request.user.is_superuser
-
-    # Only superusers can delete categories
-    def has_delete_permission(self, request, obj=None):
-        return request.user.is_superuser

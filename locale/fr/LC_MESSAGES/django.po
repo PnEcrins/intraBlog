@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-16 15:00+0200\n"
+"POT-Creation-Date: 2025-05-19 11:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,29 +18,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: blog/models.py:20 blog/models.py:34
+#: blog/models.py:14
 msgid "Category"
-msgstr ""
+msgstr "catégorie"
 
-#: blog/models.py:29
+#: blog/models.py:23
 msgid "Title"
-msgstr ""
+msgstr "titre"
 
-#: blog/models.py:31
+#: blog/models.py:25
 msgid "Content"
-msgstr ""
+msgstr "contenu"
 
-#: blog/models.py:32
+#: blog/models.py:26
 msgid "created_at"
-msgstr ""
+msgstr "créé_le"
 
-#: blog/models.py:33
+#: blog/models.py:27
 msgid "updated_at"
-msgstr ""
+msgstr "modifié_le"
 
 #: env/lib/python3.12/site-packages/django/contrib/messages/apps.py:16
 msgid "Messages"
-msgstr ""
+msgstr "messages"
 
 #: env/lib/python3.12/site-packages/django/contrib/sitemaps/apps.py:8
 msgid "Site Maps"
