@@ -12,6 +12,7 @@ Includes users, authors, categories and post management.
 - Python 3.10+
 - PostgreSQL
 - pip or pipenv
+- gettext installed on your machine
 
 ---
 
