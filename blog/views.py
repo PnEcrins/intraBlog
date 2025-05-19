@@ -2,6 +2,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.urls import reverse_lazy
 from .models import Post
 
+# View for listing all posts
 class PostListView(ListView):
     model = Post
     template_name = 'blog/post_list.html'
@@ -11,11 +12,13 @@ class PostListView(ListView):
     def get_queryset(self):
         return Post.objects.select_related('author').prefetch_related('categories').order_by('-created_at')
 
+# View for seeing detailed view of post
 class PostDetailView(DetailView):
     model = Post
     template_name = 'blog/post_detail.html'
     context_object_name = 'post'
 
+# View for creating a post
 class PostCreateView(CreateView):
     model = Post
     template_name = 'blog/post_form.html'
@@ -26,6 +29,7 @@ class PostCreateView(CreateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
+# View for updating own post
 class PostUpdateView(UpdateView):
     model = Post
     template_name = 'blog/post_form.html'
@@ -36,6 +40,7 @@ class PostUpdateView(UpdateView):
         post = self.get_object()
         return self.request.user == post.author
 
+# View for deleting own posts
 class PostDeleteView(DeleteView):
     model = Post
     template_name = 'blog/post_delete.html'
