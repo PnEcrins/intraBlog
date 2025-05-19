@@ -3,18 +3,12 @@ from django.contrib.auth.models import User
 from tinymce import models as tiny_mce
 from django.utils.translation import gettext_lazy as _
 
-class PostQuerySet(models.QuerySet):
-    def for_user(self, user):
-        if user.is_superuser:
-            return self
-        return self.filter(author=user)
-
 class PostManager(models.Manager):
-    def get_queryset(self):
-        return PostQuerySet(self.model, using=self._db)
 
-    def for_user(self, user):
-        return self.get_queryset().for_user(user)
+    def get_authorized_posts(self, user, request):
+        if request.user.is_superuser:
+            return super().get_queryset()
+        return self.all().filter(author__id=request.user.id)
 
 class Category(models.Model):
     name = models.CharField(_('Category'), max_length=100, unique=True)
