@@ -1,52 +1,53 @@
-from datetime import datetime
 from django.contrib.auth.models import User
 from django.test import TestCase
 from blog.models import Post, Category
 
-
 class PostModelTestCase(TestCase):
+    fixtures = ['test.json']
+
     def setUp(self):
-        self.user = User.objects.create_user(username="test_user", password="test_pwd")
-        self.category = Category.objects.create(name="Test_Category")
+        self.post1 = Post.objects.get(pk=1)
+        self.post2 = Post.objects.get(pk=2)
+        self.post3 = Post.objects.get(pk=3)
 
-        self.post1 = Post.objects.create(
-            title="Post 1",
-            author=self.user,
-            content="Content 1",
-            created_at=datetime(2025, 5, 19),
-            posted=True,
-        )
-        self.post1.categories.add(self.category)
+        self.cat_event = Category.objects.get(pk=1)
+        self.cat_loisir = Category.objects.get(pk=2)
+        self.cat_info = Category.objects.get(pk=3)
 
-        self.post2 = Post.objects.create(
-            title="Post 2",
-            author=self.user,
-            content="Content 2",
-            created_at=datetime(2025, 5, 20),
-            posted=False
-        )
-        self.post2.categories.add(self.category)
+        self.user1 = User.objects.get(pk=1)
+        self.user2 = User.objects.get(pk=2)
+        self.admin = User.objects.get(pk=3)
 
-    def test_post_str_returns_title(self):
-        self.assertEqual(str(self.post1), "Post 1")
-        self.assertEqual(str(self.post2), "Post 2")
+    def test_post_str(self):
+        self.assertEqual(str(self.post1), "titre 1")
+        self.assertEqual(str(self.post2), "titre 2")
+        self.assertEqual(str(self.post3), "titre 3")
 
-    def test_category_str_returns_name(self):
-        self.assertEqual(str(self.category), "Test_Category")
+    def test_post_authors(self):
+        self.assertEqual(self.post1.author, self.user1)
+        self.assertEqual(self.post2.author, self.user2)
 
-    def test_post_category_relationship(self):
-        self.assertIn(self.category, self.post1.categories.all())
-        self.assertIn(self.category, self.post2.categories.all())
+    def test_post_categories(self):
+        self.assertIn(self.cat_event, self.post1.categories.all())
+        self.assertIn(self.cat_loisir, self.post2.categories.all())
+        self.assertIn(self.cat_info, self.post3.categories.all())
 
-    def test_post_filter_posted_true(self):
-        posted_posts = Post.objects.filter(posted=True)
-        self.assertEqual(len(posted_posts), 1)
-        self.assertEqual(posted_posts[0].title, "Post 1")
+    def test_post_posted_flag(self):
+        self.assertTrue(self.post1.posted)
+        self.assertTrue(self.post2.posted)
+        self.assertTrue(self.post3.posted)
 
-    def test_post_filter_posted_false(self):
-        private_posts = Post.objects.filter(posted=False)
-        self.assertEqual(len(private_posts), 1)
-        self.assertEqual(private_posts[0].title, "Post 2")
+    def test_filter_posts_by_user(self):
+        posts_by_user1 = Post.objects.filter(author=self.user1)
+        self.assertIn(self.post1, posts_by_user1)
+        self.assertIn(self.post3, posts_by_user1)
+        self.assertNotIn(self.post2, posts_by_user1)
 
-    def test_post_author(self):
-        self.assertEqual(self.post1.author.username, "test_user")
+    def test_filter_by_category(self):
+        event_posts = Post.objects.filter(categories=self.cat_event)
+        self.assertIn(self.post1, event_posts)
+        self.assertNotIn(self.post2, event_posts)
+
+    def test_created_at_order(self):
+        posts = Post.objects.order_by('created_at')
+        self.assertEqual(list(posts), [self.post1, self.post2, self.post3])

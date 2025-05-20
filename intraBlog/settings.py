@@ -35,6 +35,8 @@ DEBUG = os.getenv("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = []
 
+# Fixture Directory
+FIXTURE_DIRS = []
 
 # Application definition
 
