@@ -132,9 +132,10 @@ Make sure `.env` is in `.gitignore` (already included).
 
 - Python 3.12.4
 - Django 5.2
+- Django Rest Framework
 - PostgreSQL 16.8
 - HTML/CSS (admin)
-- `python-dotenv` for environment config
+- python-dotenv for environment config
 
 ---
 
@@ -144,6 +145,8 @@ Make sure `.env` is in `.gitignore` (already included).
 intrablog/
 ├── blog/             ← your app
 ├── intrablog/        ← settings, urls, wsgi
+├── locale/           ← language locales
+├── media/            ← your images and files (ignored)
 ├── env/              ← virtual environment (ignored)
 ├── .env              ← your local config (ignored)
 ├── .env-sample       ← template for developers

@@ -3,9 +3,7 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 from .models import Post
 from rest_framework import viewsets
 from .serializers import PostSerializer
-
-# Maximum number of posts that can be returned
-QUERY_LIMIT = 100
+from intraBlog.settings import MAX_QUERY_LIMIT
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -44,8 +42,8 @@ class PostViewSet(viewsets.ModelViewSet):
                 if not limit.isdigit():
                     raise ValidationError("Limit must be an integer.")
                 limit_int = int(limit)
-                if limit_int > QUERY_LIMIT:
-                    raise PermissionDenied(f"Maximum limit is {QUERY_LIMIT}.")
+                if limit_int > MAX_QUERY_LIMIT:
+                    raise PermissionDenied(f"Maximum limit is {MAX_QUERY_LIMIT}.")
                 queryset = queryset[:limit_int]
 
             return queryset
