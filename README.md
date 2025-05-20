@@ -45,6 +45,7 @@ pip install -r requirements.txt
 ### 4. Set up environment variables
 
 1. Copy the example file:
+
    ```bash
    cp .env-sample .env
    ```
