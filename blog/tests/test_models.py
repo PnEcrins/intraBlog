@@ -3,7 +3,7 @@ from django.test import TestCase
 from blog.models import Post, Category
 
 class PostModelTestCase(TestCase):
-    fixtures = ['test.json']
+    fixtures = ['data.json']
 
     def setUp(self):
         self.post1 = Post.objects.get(pk=1)
