@@ -6,13 +6,12 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-
 class PostManager(models.Manager):
 
     def get_authorized_posts(self, user, request):
         if request.user.is_superuser:
             return super().get_queryset()
-        return self.all().filter(author__id=request.user.id)
+        return self.filter(posted=True) | self.filter(author=user, posted=False)
 
 
 class Category(models.Model):
