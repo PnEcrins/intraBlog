@@ -1,44 +1,52 @@
 from django.test import TestCase
-from django.contrib.auth.models import User
-from blog.models import Post, Category
 from rest_framework.test import APIClient
-from datetime import datetime
+from blog.tests.factories import UserFactory, SuperUserFactory, PostFactory, CategoryFactory
+
 
 class PostAPITestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
 
-        self.user = User.objects.create_user(username="test_user", password="test_pwd")
-        self.category = Category.objects.create(name="Test_Category")
+        # Create users
+        self.user1 = UserFactory()
+        self.user2 = UserFactory()
+        self.admin = SuperUserFactory()
 
-        Post.objects.create(
-            title="Public Post",
-            author=self.user,
-            content="Content 1",
-            created_at=datetime(2025, 5, 19),
-            posted=True,
-        ).categories.add(self.category)
+        # Categories
+        self.cat1 = CategoryFactory(name="Nature")
+        self.cat2 = CategoryFactory(name="Loisir")
+        self.cat3 = CategoryFactory(name="Info")
+        self.cat4 = CategoryFactory(name="Event")
 
-        Post.objects.create(
-            title="Private Post",
-            author=self.user,
-            content="Content 2",
-            created_at=datetime(2025, 5, 20),
-            posted=False
-        ).categories.add(self.category)
+        # Create posts
+        self.user1_posts = PostFactory.create_batch(2, author=self.user1, posted=True, categories=[self.cat1])
+        self.user1_drafts = PostFactory.create_batch(1, author=self.user1, posted=False, categories=[self.cat1])
 
-    def test_only_posted_visible(self):
+        self.user2_posts = PostFactory.create_batch(2, author=self.user2, posted=True, categories=[self.cat2])
+        self.user2_drafts = PostFactory.create_batch(1, author=self.user2, posted=False, categories=[self.cat2])
+
+        self.admin_posts = PostFactory.create_batch(3, author=self.admin, posted=True, categories=[self.cat1])
+        self.admin_drafts = PostFactory.create_batch(1, author=self.admin, posted=False, categories=[self.cat2])
+
+
+    def test_only_posted_visible_for_anonymous(self):
         response = self.client.get("/api/posts/")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()), 1)
-        self.assertEqual(response.json()[0]['title'], "Public Post")
+        self.assertEqual(len(response.json()), 7)  # 2+2+3 posted
+        for post in response.json():
+            self.assertTrue(post["posted"])
+
 
     def test_filter_by_category(self):
-        response = self.client.get(f"/api/posts/?category={self.category.id}")
+        response = self.client.get(f"/api/posts/?category={self.cat1.id}")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()), 1)
+        # 2 from user1 + 3 from admin in cat1 and posted
+        self.assertEqual(len(response.json()), 5)
+        for post in response.json():
+            self.assertIn("Nature", post["category_names"])
+
 
     def test_limit_results(self):
-        response = self.client.get("/api/posts/?limit=1")
+        response = self.client.get("/api/posts/?limit=2")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(len(response.json()), 2)
