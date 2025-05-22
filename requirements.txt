@@ -10,3 +10,4 @@ pytz
 django-cors-headers
 coverage
 codecov
+bcrypt
