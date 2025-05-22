@@ -4,9 +4,11 @@ from blog.tests.factories import PostFactory, CategoryFactory
 
 
 class PostSerializerTest(TestCase):
-    def setUp(self):
-        self.category = CategoryFactory(name="Nature")
-        self.post = PostFactory(categories=[self.category])
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.category = CategoryFactory(name="Nature")
+        cls.post = PostFactory(categories=[cls.category])
 
 
     def test_post_serializer_fields_and_types(self):
