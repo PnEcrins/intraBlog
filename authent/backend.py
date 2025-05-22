@@ -37,9 +37,9 @@ class DatabaseBackend(ModelBackend):
         user.first_name = credentials.first_name
         user.last_name = credentials.last_name
 
-        if hasattr(settings, 'AUTHENT_DEFAULT_USER_GROUP_ID'):
-            default_group_id = settings.AUTHENT_DEFAULT_USER_GROUP_ID
-            default_group = Group.objects.get(id=default_group_id)
+        if hasattr(settings, 'AUTHENT_DEFAULT_USER_GROUP_NAME'):
+            default_group_name = settings.AUTHENT_DEFAULT_USER_GROUP_NAME
+            default_group = Group.objects.get(name=default_group_name)
             user.groups.add(default_group)
         user.save()
 
