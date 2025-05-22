@@ -7,38 +7,87 @@ from blog.tests.factories import UserFactory, SuperUserFactory, PostFactory, Cat
 
 
 class AdminTestCase(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-        self.site = AdminSite()
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.factory = RequestFactory()
+        cls.site = AdminSite()
 
-        self.admin_user = SuperUserFactory()
-        self.user = UserFactory()
-        self.publisher = UserFactory()
-        self.publisher_group = Group.objects.create(name=PUBLISHER_GROUP_NAME)
-        self.publisher.groups.add(self.publisher_group)
-        self.publisher.save()
+        cls.admin_user = SuperUserFactory()
+        cls.user = UserFactory()
+        cls.publisher = UserFactory()
+        cls.publisher_group = Group.objects.create(name=PUBLISHER_GROUP_NAME)
+        cls.publisher.groups.add(cls.publisher_group)
+        cls.publisher.save()
 
-        self.post_by_publisher = PostFactory(author=self.publisher, posted=False)
-        self.post_by_user = PostFactory(author=self.user, posted=True)
+        cls.post_by_publisher = PostFactory(author=cls.publisher, posted=False)
+        cls.post_by_user = PostFactory(author=cls.user, posted=True)
 
-        self.category = CategoryFactory()
+        cls.category = CategoryFactory()
+        # Create categories
+        cls.category1 = CategoryFactory(name="Tech")
+        cls.category2 = CategoryFactory(name="Science")
 
-        self.post_admin = PostAdmin(Post, self.site)
-        self.category_admin = CategoryAdmin(Category, self.site)
+        cls.post_admin = PostAdmin(Post, cls.site)
+        cls.category_admin = CategoryAdmin(Category, cls.site)
+
+    # Test that superuser sees correct list_display, list_filter, and search_fields in PostAdmin
+    def test_post_admin_fields_superuser(self):
+        request = self.factory.get("/")
+        request.user = self.admin_user
+        self.assertTupleEqual(
+            self.post_admin.get_list_display(request),
+            ("title", "author", "created_at", "posted", "image"),
+        )
+        self.assertTupleEqual(
+            self.post_admin.get_list_filter(request),
+            ("author", "posted", "categories", "created_at"),
+        )
+        self.assertTupleEqual(
+            self.post_admin.get_search_fields(request),
+            ("title", "content"),
+        )
+
+    # Test that non-superuser sees correct list_display, list_filter, and search_fields in PostAdmin
+    def test_post_admin_fields_non_superuser(self):
+        request = self.factory.get("/")
+        request.user = self.publisher
+        self.assertTupleEqual(
+            self.post_admin.get_list_display(request),
+            ("title", "author", "created_at", "posted", "image"),
+        )
+        self.assertTupleEqual(
+            self.post_admin.get_list_filter(request),
+            ("author", "posted", "categories", "created_at"),
+        )
+        self.assertTupleEqual(
+            self.post_admin.get_search_fields(request),
+            ("title", "content"),
+        )
 
     # Test that superuser sees 'author' field in PostAdmin
-    def test_get_fields_superuser(self):
+    def test_post_admin_author_field_superuser(self):
         request = self.factory.get("/")
         request.user = self.admin_user
         fields = self.post_admin.get_fields(request)
         self.assertIn("author", fields)
 
     # Test that non-superuser does not see 'author' field in PostAdmin
-    def test_get_fields_non_superuser(self):
+    def test_post_admin_author_field_non_superuser(self):   
         request = self.factory.get("/")
         request.user = self.publisher
         fields = self.post_admin.get_fields(request)
         self.assertNotIn("author", fields)
+
+    # Test that get_categories returns a comma-separated list of category names
+    def test_category_admin_get_categories(self):
+        post = PostFactory()
+        post.categories.set([self.category1, self.category2])
+        # Use get_categories on the post instance
+        result = self.category_admin.get_categories(post)
+        self.assertIn("Tech", result)
+        self.assertIn("Science", result)
+        self.assertEqual(result, "Tech, Science")
 
     # Test that superuser sees all posts in PostAdmin queryset
     def test_get_queryset_superuser(self):
