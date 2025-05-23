@@ -51,7 +51,7 @@ class PostAdmin(admin.ModelAdmin):
             super().has_delete_permission(request, obj)
             and obj is not None
             and obj.author == request.user
-        )
+        ) 
 
     # Automatically assign current user as author when saving
     def save_model(self, request, obj, form, change):

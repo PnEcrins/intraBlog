@@ -42,8 +42,8 @@ class PostViewSet(viewsets.ModelViewSet):
                 if not limit.isdigit():
                     raise ValidationError("Limit must be an integer.")
                 limit_int = int(limit)
-                if limit_int > MAX_QUERY_LIMIT:
-                    raise PermissionDenied(f"Maximum limit is {MAX_QUERY_LIMIT}.")
+                if limit_int > MAX_QUERY_LIMIT or limit_int <= 0:
+                    raise PermissionDenied(f"limit has to be between 0 and {MAX_QUERY_LIMIT}.")
                 queryset = queryset[:limit_int]
 
             return queryset
