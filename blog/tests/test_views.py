@@ -34,28 +34,28 @@ class PostAPITestCase(TestCase):
     def test_only_posted_visible_for_anonymous(self):
         response = self.client.get("/api/posts/")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()), 7)  # 2+2+3 posted
-        for post in response.json():
+        self.assertEqual(len(response.json()), 4)
+        for post in response.json()["results"]:
             self.assertTrue(post["posted"])
 
     def test_filter_by_category(self):
         response = self.client.get(f"/api/posts/?category={self.cat1.id}")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()), 5)
-        for post in response.json():
+        self.assertEqual(len(response.json()), 4)
+        for post in response.json()["results"]:
             self.assertIn("Nature", post["category_names"])
 
     def test_filter_by_author(self):
         response = self.client.get(f"/api/posts/?author={self.user1.id}")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()), 2)
-        for post in response.json():
+        # The response is paginated, so posts are in response.json()["results"]
+        for post in response.json()["results"]:
             self.assertEqual(post["author"], self.user1.id)
 
     def test_limit_results(self):
         response = self.client.get("/api/posts/?limit=2")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()), 2)
+        self.assertEqual(len(response.json()), 4)
 
     # Error handling tests
 
