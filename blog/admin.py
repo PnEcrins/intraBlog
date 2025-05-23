@@ -39,17 +39,19 @@ class PostAdmin(admin.ModelAdmin):
     def has_change_permission(self, request, obj=None):
         if request.user.is_superuser:
             return True
-        if obj is not None and obj.author == request.user:
-            return True
-        return False
+        return super().has_change_permission(request, obj) and (
+            obj is None or obj.author == request.user
+        )
 
     # Allow delete if superuser or if user owns the object
     def has_delete_permission(self, request, obj=None):
         if request.user.is_superuser:
             return True
-        if obj is not None and obj.author == request.user:
-            return True
-        return False  
+        return (
+            super().has_delete_permission(request, obj)
+            and obj is not None
+            and obj.author == request.user
+        ) 
 
     # Automatically assign current user as author when saving
     def save_model(self, request, obj, form, change):

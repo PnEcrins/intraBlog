@@ -4,7 +4,7 @@ from django.contrib.admin.sites import AdminSite
 from blog.models import Post, Category
 from blog.admin import PostAdmin, CategoryAdmin, PUBLISHER_GROUP_NAME
 from blog.tests.factories import UserFactory, SuperUserFactory, PostFactory, CategoryFactory
-
+from django.contrib.auth.models import Permission
 
 class AdminTestCase(TestCase):
     @classmethod
@@ -18,6 +18,13 @@ class AdminTestCase(TestCase):
         cls.publisher = UserFactory()
         cls.publisher_group = Group.objects.create(name=PUBLISHER_GROUP_NAME)
         cls.publisher.groups.add(cls.publisher_group)
+        cls.publisher.save()
+
+        # Assign 'change_post' permission to publisher
+        change_post_perm = Permission.objects.get(codename='change_post')
+        delete_post_perm = Permission.objects.get(codename='delete_post')
+        cls.publisher.user_permissions.add(change_post_perm)
+        cls.publisher.user_permissions.add(delete_post_perm)
         cls.publisher.save()
 
         cls.post_by_publisher = PostFactory(author=cls.publisher, posted=False)
