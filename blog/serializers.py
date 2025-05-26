@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from blog.models import Post, Category
-from django.contrib.auth.models import User
 
 class PostSerializer(serializers.ModelSerializer):
     author_name = serializers.CharField(source='author.username', read_only=True)
@@ -26,3 +25,8 @@ class PostSerializer(serializers.ModelSerializer):
             'categories',    
             'category_names' 
         ]
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = "__all__"

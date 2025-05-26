@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import include, path
 from blog.views import (
+    CategoryViewSet,
     PostViewSet,
 )
 from django.conf import settings
@@ -11,6 +12,7 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register("posts", PostViewSet, "post")
+router.register("categories", CategoryViewSet, "category")
 
 urlpatterns = (
     [

@@ -39,11 +39,20 @@ class PostAPITestCase(TestCase):
             self.assertTrue(post["posted"])
 
     def test_filter_by_category(self):
-        response = self.client.get(f"/api/posts/?category={self.cat1.id}")
+        response = self.client.get(f"/api/posts/?categories={self.cat1.id}")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()), 4)
         for post in response.json()["results"]:
             self.assertIn("Nature", post["category_names"])
+
+    def test_filter_by_multiple_categories(self):
+        response = self.client.get(f"/api/posts/?categories={self.cat1.id},{self.cat2.id}")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 4)
+        for post in response.json()["results"]:
+            self.assertTrue(
+                post["category_names"] == [self.cat1.name] or post["category_names"] == [self.cat2.name]
+            )
 
     def test_filter_by_author(self):
         response = self.client.get(f"/api/posts/?author={self.user1.id}")
@@ -60,7 +69,7 @@ class PostAPITestCase(TestCase):
     # Error handling tests
 
     def test_invalid_category_id(self):
-        response = self.client.get("/api/posts/?category=abc")
+        response = self.client.get("/api/posts/?categories=abc")
         self.assertEqual(response.status_code, 400)
         self.assertIn("Category ID must be a number.", str(response.content))
 

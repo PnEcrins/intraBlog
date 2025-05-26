@@ -1,8 +1,9 @@
+from math import e
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from django.core.exceptions import ValidationError as DjangoValidationError
-from .models import Post
+from .models import Category, Post
 from rest_framework import viewsets
-from .serializers import PostSerializer
+from .serializers import CategorySerializer, PostSerializer
 from intraBlog.settings import MAX_QUERY_LIMIT
 
 
@@ -15,11 +16,18 @@ class PostViewSet(viewsets.ModelViewSet):
             queryset = Post.objects.filter(posted=True).order_by("-created_at")
 
             # Filter by category ID
-            category = self.request.query_params.get("category")
-            if category:
-                if not category.isdigit():
-                    raise ValidationError("Category ID must be a number.")
-                queryset = queryset.filter(categories__id=int(category))
+            category = self.request.query_params.get("categories")
+
+            # convert to array if more than 1 category is provided
+            if category and "," in category:
+                category_ids = [int(cat_id) for cat_id in category.split(",") if cat_id.isdigit()]
+                queryset = queryset.filter(categories__id__in=category_ids)
+            else:
+                # If a single category is provided, ensure it's a number
+                if category:
+                    if not category.isdigit():
+                        raise ValidationError("Category ID must be a number.")
+                    queryset = queryset.filter(categories__id=int(category))
 
             # Filter by author ID
             user_id = self.request.query_params.get("author")
@@ -53,3 +61,7 @@ class PostViewSet(viewsets.ModelViewSet):
         except Exception as e:
             # Fallback for unexpected exceptions
             raise ValidationError(f"An unexpected error occurred: {str(e)}")
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    serializer_class = CategorySerializer
+    queryset = Category.objects.all().order_by("id")
