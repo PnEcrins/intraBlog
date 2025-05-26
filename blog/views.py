@@ -20,8 +20,11 @@ class PostViewSet(viewsets.ModelViewSet):
 
             # convert to array if more than 1 category is provided
             if category and "," in category:
-                category_ids = [int(cat_id) for cat_id in category.split(",") if cat_id.isdigit()]
-                queryset = queryset.filter(categories__id__in=category_ids)
+                category_ids = category.split(",")
+                if not all(cat_id.isdigit() for cat_id in category_ids):
+                    raise ValidationError("All category IDs must be numbers.")
+                category_ids = [int(cat_id) for cat_id in category_ids]
+                queryset = queryset.filter(categories__id__in=category_ids).distinct()
             else:
                 # If a single category is provided, ensure it's a number
                 if category:

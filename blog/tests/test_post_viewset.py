@@ -73,6 +73,11 @@ class PostAPITestCase(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn("Category ID must be a number.", str(response.content))
 
+    def test_invalid_multiple_category_ids(self):
+        response = self.client.get("/api/posts/?categories=1,abc")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("All category IDs must be numbers.", str(response.content))
+
     def test_invalid_author_id(self):
         response = self.client.get("/api/posts/?author=notanumber")
         self.assertEqual(response.status_code, 400)
