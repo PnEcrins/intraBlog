@@ -1,6 +1,7 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
 from unittest.mock import patch
+from blog import models
 from blog.tests.factories import UserFactory, SuperUserFactory, PostFactory, CategoryFactory
 from intraBlog.settings import MAX_QUERY_LIMIT
 
@@ -31,24 +32,33 @@ class PostAPITestCase(TestCase):
         cls.admin_posts = PostFactory.create_batch(3, author=cls.admin, posted=True, categories=[cls.cat1])
         cls.admin_drafts = PostFactory.create_batch(1, author=cls.admin, posted=False, categories=[cls.cat2])
 
+    def check_number_elems_response(self, response, model):
+        json_response = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json_response["count"], model.objects.filter(posted=True).count())
+
     def test_only_posted_visible_for_anonymous(self):
         response = self.client.get("/api/posts/")
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()), 4)
+        self.check_number_elems_response(response, model=PostFactory._meta.model)
         for post in response.json()["results"]:
             self.assertTrue(post["posted"])
 
     def test_filter_by_category(self):
         response = self.client.get(f"/api/posts/?categories={self.cat1.id}")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()), 4)
+        expected_count = PostFactory._meta.model.objects.filter(categories=self.cat1, posted=True).count()
+        self.assertEqual(response.json()["count"], expected_count)
         for post in response.json()["results"]:
             self.assertIn("Nature", post["category_names"])
 
     def test_filter_by_multiple_categories(self):
         response = self.client.get(f"/api/posts/?categories={self.cat1.id},{self.cat2.id}")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()), 4)
+        # Check the total count in the paginated response
+        expected_count = PostFactory._meta.model.objects.filter(
+            posted=True, categories__in=[self.cat1, self.cat2]
+        ).distinct().count()
+        self.assertEqual(response.json()["count"], expected_count)
         for post in response.json()["results"]:
             self.assertTrue(
                 post["category_names"] == [self.cat1.name] or post["category_names"] == [self.cat2.name]
@@ -64,7 +74,9 @@ class PostAPITestCase(TestCase):
     def test_limit_results(self):
         response = self.client.get("/api/posts/?limit=2")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()), 4)
+        self.assertEqual(len(response.json()["results"]), 2)
+        self.assertEqual(response.json()["count"], 2)
+
 
     # Error handling tests
 
