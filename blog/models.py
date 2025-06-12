@@ -35,6 +35,9 @@ class Post(models.Model):
     image = models.ImageField(
         upload_to="post_images/", null=True, blank=True, verbose_name=_("Image")
     )
+    file = models.FileField(
+        upload_to="post_files/", null=True, blank=True, verbose_name=_("File")
+    )
 
     objects = PostManager()
 

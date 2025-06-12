@@ -20,6 +20,7 @@ class PostSerializer(serializers.ModelSerializer):
             'updated_at',
             'posted',
             'image',
+            'file',
             'author',        
             'author_name',   
             'categories',    

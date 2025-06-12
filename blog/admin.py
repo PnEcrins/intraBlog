@@ -17,7 +17,7 @@ class PostAdminForm(forms.ModelForm):
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ("title", "author", "created_at", "posted", "image")
+    list_display = ("title", "author", "created_at", "updated_at", "posted", "image", "file")
     list_filter = ("author", "posted", "categories", "created_at")
     search_fields = ("title", "content")
 

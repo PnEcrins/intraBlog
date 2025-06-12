@@ -44,7 +44,7 @@ class AdminTestCase(TestCase):
         request.user = self.admin_user
         self.assertTupleEqual(
             self.post_admin.get_list_display(request),
-            ("title", "author", "created_at", "posted", "image"),
+            ("title", "author", "created_at", "updated_at", "posted", "image", "file"),
         )
         self.assertTupleEqual(
             self.post_admin.get_list_filter(request),
@@ -61,7 +61,7 @@ class AdminTestCase(TestCase):
         request.user = self.publisher
         self.assertTupleEqual(
             self.post_admin.get_list_display(request),
-            ("title", "author", "created_at", "posted", "image"),
+            ("title", "author", "created_at", "updated_at", "posted", "image", "file"),
         )
         self.assertTupleEqual(
             self.post_admin.get_list_filter(request),
