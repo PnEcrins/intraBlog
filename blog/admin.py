@@ -28,12 +28,12 @@ class PostAdmin(admin.ModelAdmin):
             return [f for f in fields if f != "author"]
         return fields
 
-    # Show all posted posts + user’s own posted and not posted posts
+    # Show only user’s own posted and not posted posts
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
-        return qs.filter(posted=True) | qs.filter(author=request.user)
+        return qs.filter(author=request.user)
 
     # Allow change if superuser or if user owns the object
     def has_change_permission(self, request, obj=None):
