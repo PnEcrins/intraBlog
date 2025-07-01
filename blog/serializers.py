@@ -2,7 +2,8 @@ from rest_framework import serializers
 from blog.models import Post, Category
 
 class PostSerializer(serializers.ModelSerializer):
-    author_name = serializers.CharField(source='author.username', read_only=True)
+    author_first_name = serializers.CharField(source='author.first_name', read_only=True)
+    author_last_name = serializers.CharField(source='author.last_name', read_only=True)
     category_names = serializers.SlugRelatedField(
         many=True,
         read_only=True,
@@ -22,7 +23,8 @@ class PostSerializer(serializers.ModelSerializer):
             'image',
             'file',
             'author',        
-            'author_name',   
+            'author_first_name',
+            'author_last_name',   
             'categories',    
             'category_names' 
         ]
