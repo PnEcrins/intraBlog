@@ -74,11 +74,8 @@ pip install -r requirements.txt
 Log in to PostgreSQL and create your database and user:
 
 ```sql
-CREATE DATABASE your_db_name;
 CREATE USER your_db_user WITH PASSWORD 'your_password';
-GRANT ALL PRIVILEGES ON DATABASE your_db_name TO your_db_user;
-GRANT ALL ON SCHEMA public TO your_db_user;
-ALTER SCHEMA public OWNER TO your_db_user;
+CREATE DATABASE your_db_name OWNER <DB_USER> ;
 ```
 
 ---
@@ -86,7 +83,6 @@ ALTER SCHEMA public OWNER TO your_db_user;
 ### 6. Run migrations
 
 ```bash
-python manage.py makemigrations
 python manage.py migrate
 ```
 
