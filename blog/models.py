@@ -8,11 +8,10 @@ User = get_user_model()
 
 class PostManager(models.Manager):
 
-    def get_authorized_posts(self, user, request):
-        if request.user.is_superuser:
+    def get_authorized_posts(self, request):
+        if request.user.is_superuser or request.user.has_perm("blog.can_view_all_posts"):
             return super().get_queryset()
-        return self.filter(posted=True) | self.filter(author=user, posted=False)
-
+        return self.filter(author=request.user)
 
 class Category(models.Model):
     name = models.CharField(verbose_name="Categorie", max_length=100, unique=True)
@@ -25,6 +24,10 @@ class Category(models.Model):
 
 
 class Post(models.Model):
+    class Meta:
+        permissions = [
+            ("can_view_all_posts", "Can view all posts")
+        ]
     title = models.CharField(verbose_name="Titre", max_length=200)
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Auteur")
     content = tiny_mce.HTMLField(verbose_name="Contenu", blank=True)

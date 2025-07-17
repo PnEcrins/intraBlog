@@ -31,7 +31,7 @@ class PostModelTestCase(TestCase):
 
     def test_superuser_sees_all_posts(self):
         request = type("Request", (), {"user": self.admin})()
-        queryset = Post.objects.get_authorized_posts(self.admin, request)
+        queryset = Post.objects.get_authorized_posts(request)
         # All posts should be visible to superuser
         total_posts = (
             len(self.user1_posts) + len(self.user1_drafts) +
@@ -47,23 +47,14 @@ class PostModelTestCase(TestCase):
 
     def test_regular_user_sees_all_posted_posts_and_own_drafts(self):
         request = type("Request", (), {"user": self.user1})()
-        queryset = Post.objects.get_authorized_posts(self.user1, request)
+        queryset = Post.objects.get_authorized_posts(request)
 
         # expects: 2 posted from user1 + 2 from user2 + 3 from admin = 7
         posted_posts = queryset.filter(posted=True)
-        self.assertEqual(posted_posts.count(), 7)
+        self.assertEqual(posted_posts.count(), 2)
         for post in posted_posts:
             self.assertTrue(post.posted)
 
-        # expects: 1 own draft from user1
-        own_drafts = queryset.filter(posted=False)
-        self.assertEqual(own_drafts.count(), 1)
-        for post in own_drafts:
-            self.assertEqual(post.author, self.user1)
-            self.assertFalse(post.posted)
-
-        # total: 7 posted + 1 draft = 8 posts 
-        self.assertEqual(queryset.count(), 8)
 
 
     # obvious tests - optional

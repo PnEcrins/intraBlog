@@ -30,10 +30,7 @@ class PostAdmin(admin.ModelAdmin):
 
     # Show only user’s own posted and not posted posts
     def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        if request.user.is_superuser:
-            return qs
-        return qs.filter(author=request.user)
+        return Post.objects.get_authorized_posts(request)
 
     # Allow change if superuser or if user owns the object
     def has_change_permission(self, request, obj=None):
