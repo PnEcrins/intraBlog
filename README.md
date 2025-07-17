@@ -113,7 +113,24 @@ Run this command in order to group all static files in one single place :
 
    python manage.py runserver
 
-You must install a web server to deploy the application. Here is an example using Apache :
+Change the local_settings.py parameters :
+
+   ALLOWED_HOSTS = ["myhost"]
+   CSRF_TRUSTED_ORIGINS = ["http://myhost"]
+
+*Create a systemd service*
+
+Copy and adapt the sample service file `intrablog.service` into `/etc/systemd/system/intrablog.service`
+Then run :
+
+systemctl daemon-reload
+systemctl enable intrablog.service
+systemctl start intrablog.service
+
+The service is now running !
+
+
+*Configure Apache*
 
    apt install apache2
    a2enmod proxy
@@ -142,11 +159,6 @@ Create a conf in `/etc/apache2/sites-availables`
          </Location>
       </VirtualHost>
 
-
-Change the local_settings.py parameters :
-
-   ALLOWED_HOSTS = ["myhost"]
-   CSRF_TRUSTED_ORIGINS = ["http://myhost"]
 
 
 ## 🛡 .env Security
