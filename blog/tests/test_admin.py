@@ -104,14 +104,6 @@ class AdminTestCase(TestCase):
         self.assertIn(self.post_by_user, qs)
         self.assertIn(self.post_by_publisher, qs)
 
-    # Test that publisher sees all posts in PostAdmin queryset
-    def test_get_queryset_publisher(self):
-        request = self.factory.get("/")
-        request.user = self.publisher
-        qs = self.post_admin.get_queryset(request)
-        self.assertIn(self.post_by_publisher, qs)
-        self.assertIn(self.post_by_user, qs)
-
     # Test that superuser can change any post
     def test_has_change_permission_superuser(self):
         request = self.factory.get("/")

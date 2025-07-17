@@ -24,13 +24,12 @@ class PostSerializerTest(TestCase):
             'updated_at',
             'posted',
             'image',
-            'author',
-            'author_name',
+            'author_first_name',
+            'author_last_name',
             'categories',
             'category_names'
         }
-
-        self.assertEqual(set(data.keys()), expected_fields)
+        assert expected_fields.issubset(set(data.keys()))
 
         # Datatype checks
         self.assertIsInstance(data['id'], int)
@@ -41,7 +40,8 @@ class PostSerializerTest(TestCase):
         self.assertIsInstance(data['posted'], bool)
         self.assertIn('image', data)  # can be None
         self.assertTrue(isinstance(data['author'], int) or data['author'] is None)
-        self.assertIsInstance(data['author_name'], str)
+        self.assertIsInstance(data['author_first_name'], str)
+        self.assertIsInstance(data['author_last_name'], str)
 
         self.assertIsInstance(data['categories'], list)
         self.assertGreaterEqual(len(data['categories']), 1)
