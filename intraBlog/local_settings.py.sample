@@ -1,18 +1,25 @@
-AUTHENTICATION_BACKENDS += ['authent.backend.DatabaseBackend']
+# AUTHENTICATION_BACKENDS += ['authent.backend.DatabaseBackend']
 
 
-AUTHENT_DATABASE = 'authent'
-AUTHENT_TABLENAME = 'utilisateurs.ma_table'
+# AUTHENT_DATABASE = 'authent'
+# AUTHENT_TABLENAME = 'utilisateurs.ma_table'
 
-DATABASES['authent'] = {
-    'ENGINE': 'django.contrib.gis.db.backends.postgis',
-    'NAME': '',
-    'USER': '',
-    'PASSWORD': '',
-    'HOST': '',
-    'PORT': '',
-    'OPTIONS' : {'options': '-c search_path=public,utilisateurs'}
+# DATABASES['authent'] = {
+#     'ENGINE': 'django.db.backends.postgresql',
+#     'NAME': '',
+#     'USER': '',
+#     'PASSWORD': '',
+#     'HOST': '',
+#     'PORT': '',
+#     'OPTIONS' : {'options': '-c search_path=public,utilisateurs'}
 
-}
+# }
 
 #AUTHENT_DEFAULT_USER_GROUP_NAME = "test"
+debug = True
+
+# PROD config
+
+
+ALLOWED_HOSTS = ["127.0.0.1"]
+CSRF_TRUSTED_ORIGINS = ["http://myhost"]
