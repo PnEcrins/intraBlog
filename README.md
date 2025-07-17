@@ -51,12 +51,13 @@ pip install -r requirements.txt
 
 ---
 
-### 4. Set up environment variables
+### 4. Set up environment variables and config file
 
 1. Copy the example file:
 
    ```bash
    cp .env-sample .env
+   cp  intraBlog/local_settings.py.sample intraBlog/local_settings.py
    ```
 
 2. Edit `.env` and fill in your PostgreSQL credentials:
@@ -96,7 +97,7 @@ python manage.py createsuperuser
 
 ---
 
-### 8. Run the server
+### 8. Run the server (dev)
 
 ```bash
 python manage.py runserver
@@ -105,6 +106,48 @@ python manage.py runserver
 Then visit: [http://127.0.0.1:8000/admin](http://127.0.0.1:8000/admin)
 
 ---
+
+### 9. Deploy in prod
+
+Run this command in order to group all static files in one single place :
+
+   python manage.py runserver
+
+You must install a web server to deploy the application. Here is an example using Apache :
+
+   apt install apache2
+   a2enmod proxy
+   a2enmod proxy_http
+
+Create a conf in `/etc/apache2/sites-availables`
+
+
+      <VirtualHost *:80>
+         ServerName intrablog
+
+         Alias "/static/" "/home/intranet/intraBlog/static/"
+         <Directory "/home/intranet/intraBlog/static">
+            Require all granted
+         </Directory>
+
+
+         <Location "/">
+            ProxyPass http://127.0.0.1:8000/
+            ProxyPassReverse http://127.0.0.1:8000/
+            ProxyPreserveHost On
+         </Location>
+
+         <Location "/static">
+            ProxyPass !
+         </Location>
+      </VirtualHost>
+
+
+Change the local_settings.py parameters :
+
+   ALLOWED_HOSTS = ["myhost"]
+   CSRF_TRUSTED_ORIGINS = ["http://myhost"]
+
 
 ## 🛡 .env Security
 
