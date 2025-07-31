@@ -28,6 +28,8 @@ class Post(models.Model):
         permissions = [
             ("can_view_all_posts", "Can view all posts")
         ]
+        ordering = ["created_at"]
+
     title = models.CharField(verbose_name="Titre", max_length=200)
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Auteur")
     content = tiny_mce.HTMLField(verbose_name="Contenu", blank=True)
