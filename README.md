@@ -111,30 +111,30 @@ Then visit: [http://127.0.0.1:8000/admin](http://127.0.0.1:8000/admin)
 
 Run this command in order to group all static files in one single place :
 
-   python manage.py runserver
+      python manage.py collectstatic
 
 Change the local_settings.py parameters :
 
-   ALLOWED_HOSTS = ["myhost"]
-   CSRF_TRUSTED_ORIGINS = ["http://myhost"]
+      ALLOWED_HOSTS = ["myhost"]
+      CSRF_TRUSTED_ORIGINS = ["http://myhost"]
 
 *Create a systemd service*
 
 Copy and adapt the sample service file `intrablog.service` into `/etc/systemd/system/intrablog.service`
 Then run :
 
-systemctl daemon-reload
-systemctl enable intrablog.service
-systemctl start intrablog.service
+      systemctl daemon-reload
+      systemctl enable intrablog.service
+      systemctl start intrablog.service
 
 The service is now running !
 
 
 *Configure Apache*
 
-   apt install apache2
-   a2enmod proxy
-   a2enmod proxy_http
+      apt install apache2
+      a2enmod proxy
+      a2enmod proxy_http
 
 Create a conf in `/etc/apache2/sites-availables`
 
