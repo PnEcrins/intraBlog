@@ -26,7 +26,9 @@ class Category(models.Model):
 class Post(models.Model):
     class Meta:
         permissions = [
-            ("can_view_all_posts", "Can view all posts")
+            ("can_view_all_posts", "Can view all posts"),
+            ("can_change_all_posts", "Can edit all posts"),
+            ("can_delete_all_posts", "Can change all posts"),
         ]
         ordering = ["-updated_at"]
 

@@ -35,7 +35,7 @@ class PostAdmin(admin.ModelAdmin):
 
     # Allow change if superuser or if user owns the object
     def has_change_permission(self, request, obj=None):
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.has_perm("blog.can_change_all_posts"):
             return True
         return super().has_change_permission(request, obj) and (
             obj is None or obj.author == request.user
@@ -43,7 +43,7 @@ class PostAdmin(admin.ModelAdmin):
 
     # Allow delete if superuser or if user owns the object
     def has_delete_permission(self, request, obj=None):
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.has_perm("blog.can_delete_all_posts"):
             return True
         return (
             super().has_delete_permission(request, obj)
