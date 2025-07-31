@@ -20,6 +20,7 @@ class PostAdmin(admin.ModelAdmin):
     list_display = ("title", "author", "created_at", "updated_at", "posted", "image", "file")
     list_filter = ("author", "posted", "categories", "created_at")
     search_fields = ("title", "content")
+    ordering = ["-updated_at"]
 
     # Hide 'author' field for non-superusers
     def get_fields(self, request, obj=None):
