@@ -11,3 +11,4 @@ django-cors-headers
 coverage
 codecov
 bcrypt
+django-filter

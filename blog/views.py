@@ -1,6 +1,8 @@
 from math import e
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from django.core.exceptions import ValidationError as DjangoValidationError
+from rest_framework.filters import OrderingFilter
+
 from .models import Category, Post
 from rest_framework import viewsets
 from .serializers import CategorySerializer, PostSerializer
@@ -9,11 +11,11 @@ from intraBlog.settings import MAX_QUERY_LIMIT
 
 class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
-
+    filter_backends = [OrderingFilter]
     def get_queryset(self):
         try:
             # Only published posts, sorted newest first
-            queryset = Post.objects.filter(posted=True).order_by("-created_at")
+            queryset = Post.objects.filter(posted=True)
 
             # Filter by category ID
             category = self.request.query_params.get("categories")
